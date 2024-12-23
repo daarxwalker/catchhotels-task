@@ -2,7 +2,7 @@ package auth_handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-
+	
 	"catchhotels/entity/player_entity"
 	"catchhotels/facade"
 	"catchhotels/module/player_module/auth_handler/auth_request"
@@ -43,7 +43,7 @@ func Register() fiber.Handler {
 		}
 		var createResponse fiber.Map
 		facade.Dataverse(c).MustCreate(
-			"cr568_players", player_entity.Player{
+			player_entity.Table, player_entity.Player{
 				FirstName: body.FirstName,
 				LastName:  body.LastName,
 				Phone:     body.Phone,
