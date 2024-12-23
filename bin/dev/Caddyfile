@@ -1,0 +1,5 @@
+http://localhost {
+	handle {
+		reverse_proxy catchhotels-backend-dnd:8000
+	}
+}

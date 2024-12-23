@@ -1,0 +1,217 @@
+definitions:
+  auth_request.LoginPlayer:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  auth_request.RegisterPlayer:
+    properties:
+      cin:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+    required:
+    - cin
+    - email
+    - firstName
+    - lastName
+    - phone
+    type: object
+  character_request.CreateCharacter:
+    properties:
+      classId:
+        type: string
+      name:
+        type: string
+      raceId:
+        type: string
+    required:
+    - classId
+    - name
+    - raceId
+    type: object
+  player_response.Character:
+    properties:
+      charisma:
+        type: integer
+      class:
+        type: string
+      dexterity:
+        type: integer
+      intelligence:
+        type: integer
+      level:
+        type: integer
+      name:
+        type: string
+      race:
+        type: string
+      strength:
+        type: integer
+    type: object
+  player_response.Player:
+    properties:
+      characters:
+        items:
+          $ref: '#/definitions/player_response.Character'
+        type: array
+      email:
+        type: string
+      id:
+        type: string
+    type: object
+  session_service.Session:
+    properties:
+      characterId:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      userAgent:
+        type: string
+    type: object
+host: localhost
+info:
+  contact: {}
+  description: Example Dataverse Powerapps DnD app
+  title: Catchhotels Task Documentation
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email
+      parameters:
+      - description: Login request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth_request.LoginPlayer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/session_service.Session'
+      summary: Player authentication
+      tags:
+      - Authentication
+  /auth/logout:
+    delete:
+      consumes:
+      - application/json
+      description: Destroy session in cache and expire cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      summary: Destroy player session
+      tags:
+      - Authentication
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Validate CIN in ARES
+      parameters:
+      - description: Register request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth_request.RegisterPlayer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      summary: Create player account
+      tags:
+      - Authentication
+  /dungeon-master/player:
+    get:
+      consumes:
+      - application/json
+      description: Players are cached
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/player_response.Player'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Find all players with grouped characters
+      tags:
+      - Dungeon Master
+  /player/character/create:
+    post:
+      consumes:
+      - application/json
+      description: Stats are random with dice rolls and base stats.
+      parameters:
+      - description: New character request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/character_request.CreateCharacter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: abc-def-efg-hij
+          schema:
+            type: string
+      summary: Create a new player character
+      tags:
+      - Player character
+  /player/character/use/:characterId:
+    post:
+      consumes:
+      - application/json
+      description: CharacterId is stored in session
+      parameters:
+      - description: Character ID
+        in: path
+        name: characterId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      summary: Choose and play with character
+      tags:
+      - Player character
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

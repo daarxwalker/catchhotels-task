@@ -1,0 +1,25 @@
+FROM golang:1.23-alpine
+
+ARG NAME
+ARG PORT
+ARG DATAVERSE_CLIENT_ID
+ARG DATAVERSE_CLIENT_SECRET
+ARG DATAVERSE_TENANT_ID
+
+ENV APP_ENV=development
+ENV APP_NAME=$NAME
+ENV APP_PORT=$PORT
+ENV DATAVERSE_CLIENT_ID=$DATAVERSE_CLIENT_ID
+ENV DATAVERSE_CLIENT_SECRET=$DATAVERSE_CLIENT_SECRET
+ENV DATAVERSE_TENANT_ID=$DATAVERSE_TENANT_ID
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
+WORKDIR /app/${APP_NAME}
+
+COPY . .
+
+RUN go install github.com/cespare/reflex@latest
+
+ENTRYPOINT reflex -r '(\.go$|go\.mod$)' -s go run .

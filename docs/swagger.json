@@ -1,0 +1,332 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Example Dataverse Powerapps DnD app",
+        "title": "Catchhotels Task Documentation",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Login with email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Player authentication",
+                "parameters": [
+                    {
+                        "description": "Login request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth_request.LoginPlayer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/session_service.Session"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "delete": {
+                "description": "Destroy session in cache and expire cookie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Destroy player session",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Validate CIN in ARES",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Create player account",
+                "parameters": [
+                    {
+                        "description": "Register request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth_request.RegisterPlayer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/dungeon-master/player": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Players are cached",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dungeon Master"
+                ],
+                "summary": "Find all players with grouped characters",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/player_response.Player"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/player/character/create": {
+            "post": {
+                "description": "Stats are random with dice rolls and base stats.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Player character"
+                ],
+                "summary": "Create a new player character",
+                "parameters": [
+                    {
+                        "description": "New character request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/character_request.CreateCharacter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "abc-def-efg-hij",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/player/character/use/:characterId": {
+            "post": {
+                "description": "CharacterId is stored in session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Player character"
+                ],
+                "summary": "Choose and play with character",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Character ID",
+                        "name": "characterId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth_request.LoginPlayer": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth_request.RegisterPlayer": {
+            "type": "object",
+            "required": [
+                "cin",
+                "email",
+                "firstName",
+                "lastName",
+                "phone"
+            ],
+            "properties": {
+                "cin": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "character_request.CreateCharacter": {
+            "type": "object",
+            "required": [
+                "classId",
+                "name",
+                "raceId"
+            ],
+            "properties": {
+                "classId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "raceId": {
+                    "type": "string"
+                }
+            }
+        },
+        "player_response.Character": {
+            "type": "object",
+            "properties": {
+                "charisma": {
+                    "type": "integer"
+                },
+                "class": {
+                    "type": "string"
+                },
+                "dexterity": {
+                    "type": "integer"
+                },
+                "intelligence": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "race": {
+                    "type": "string"
+                },
+                "strength": {
+                    "type": "integer"
+                }
+            }
+        },
+        "player_response.Player": {
+            "type": "object",
+            "properties": {
+                "characters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/player_response.Character"
+                    }
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "session_service.Session": {
+            "type": "object",
+            "properties": {
+                "characterId": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "userAgent": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

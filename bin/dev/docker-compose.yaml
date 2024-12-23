@@ -1,0 +1,48 @@
+services:
+  catchhotels-backend-dnd:
+    tty: true
+    container_name: catchhotels-backend-dnd
+    image: catchhotels-backend-dnd
+    build:
+      context: ../../
+      dockerfile: bin/dev/Dockerfile
+      args:
+        NAME: dnd
+        PORT: 8000
+    networks:
+      - catchhotels
+
+  catchhotels-dragonfly:
+    tty: true
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: catchhotels-dragonflydb
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - catchhotels_dragonfly_data:/data
+    networks:
+      - catchhotels
+
+  catchhotels-caddy:
+    image: caddy:latest
+    tty: true
+    container_name: catchhotels-caddy
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - catchhotels_caddy_data:/data
+      - catchhotels_caddy_config:/config
+    networks:
+      - catchhotels
+
+volumes:
+  catchhotels_dragonfly_data:
+  catchhotels_caddy_data:
+  catchhotels_caddy_config:
+
+networks:
+  catchhotels:
+    name: catchhotels
