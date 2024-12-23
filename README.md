@@ -3,6 +3,7 @@
 ## Dev start
 
 ```bash
+cd bin/dev
 docker compose build \
 	--build-arg DATAVERSE_CLIENT_ID=<client-id> \
  	--build-arg DATAVERSE_CLIENT_SECRET=<client-secret>  \
