@@ -3,7 +3,10 @@
 ## Dev start
 
 ```bash
-docker compose build --build-arg DATAVERSE_CLIENT_ID=<client-id> --build-arg DATAVERSE_CLIENT_SECRET=<client-secret>  --build-arg DATAVERSE_TENANT_ID=<tenant_id>
+docker compose build \
+	--build-arg DATAVERSE_CLIENT_ID=<client-id> \
+ 	--build-arg DATAVERSE_CLIENT_SECRET=<client-secret>  \
+	--build-arg DATAVERSE_TENANT_ID=<tenant_id>
 docker compose up
 ```
 
